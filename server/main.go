@@ -10,7 +10,7 @@ func main()  {
 	mux := http.NewServeMux()
 	mux.Handle("/", http.HandlerFunc(homePage))
 	fmt.Println("begin server!")
-	log.Fatal(http.ListenAndServe("47.115.134.61:80", mux))
+	log.Fatal(http.ListenAndServe(":8000", mux))
 }
 
 func homePage(write http.ResponseWriter,request *http.Request)  {
