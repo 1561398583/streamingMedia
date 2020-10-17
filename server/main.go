@@ -8,7 +8,7 @@ import (
 func main()  {
 	mux := http.NewServeMux()
 	mux.Handle("/", http.HandlerFunc(homePage))
-	log.Fatal(http.ListenAndServe("localhost:80", mux))
+	log.Fatal(http.ListenAndServe("localhost:8000", mux))
 }
 
 func homePage(write http.ResponseWriter,request *http.Request)  {
