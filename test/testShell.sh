@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ps -aux
+ps -aux | grep test
