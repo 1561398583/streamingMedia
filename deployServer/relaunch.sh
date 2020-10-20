@@ -2,6 +2,6 @@
 
 sudo su root
 cd /home/admin/streamingMedia/
-git pull origin main:main
+git pull origin -m
 chmod 777 /home/admin/streamingMedia/mediaServer/mediaServer
 
