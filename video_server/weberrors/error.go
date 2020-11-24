@@ -6,32 +6,41 @@ import (
 )
 
 type WebError struct {
-	Msg string
+	err error
 	StackInfo string
 	ErrorType int	//0:未知错误，需要记录错误位置到log；1.业务错误,请求对象没找到，只需返回错误信息给用户
 }
+
+type WE struct {
+	msg string
+}
+
+func (we *WE) Error() string{
+	return we.msg
+}
+
 
 //ErrorType
 const (
 	UNKNOW_ERROR = 0
 	NOT_FOUND = 1
+	PARA_ERROR = 2	//参数错误
 )
 
 func (we *WebError) Error() string {
-	return we.Msg + "\n" + we.StackInfo
+	return we.err.Error()
 }
 
-func (we *WebError) GetType() int {
-	return we.ErrorType
+
+func (we *WebError) GetStackInfo() string {
+	return we.StackInfo
 }
 
-func (we *WebError) GetMsg() string {
-	return we.Msg
-}
 
-func New(msg string, et int) *WebError {
-	line := getLine()
-	return &WebError{Msg: msg, StackInfo: line, ErrorType: et}
+func New(msg string) *WebError {
+	err := WE{msg: msg}
+	stackInfo := getStack()
+	return &WebError{err: &err, StackInfo: stackInfo}
 }
 
 //获取位置
@@ -43,22 +52,35 @@ func getLine() string {
 	return "[" + fileName + " : " + strconv.FormatInt(int64(line), 10) + "]"
 }
 
+//获取调用栈信息
+func getStack() string {
+	s := ""
+	for i := 0; ;i++ {
+		_, fileName, line, ok := runtime.Caller(i)
+		if !ok {
+			break
+		}
+		s = s + fileName + " " + strconv.FormatInt(int64(line), 10) + "\n"
+	}
+	return s
+}
+
 func Wrap(e error) error {
-	//如果是WebError，则添加调用栈信息;否则把error封装成WebError返回
+	//如果是WebError,直接返回;否则把error封装成WebError返回
 	if we, ok := e.(*WebError); ok{
-		we.StackInfo = we.StackInfo + "\n" + getLine()
 		return we
 	}else {
-		return New(e.Error(), UNKNOW_ERROR)
+		return &WebError{err: e, StackInfo: getStack()}
 	}
 }
 
-func Type(e error) int {
+//获取error类型
+func Cause(e error) error {
 	if we, ok := e.(*WebError); ok{
-		return we.GetType()
-	}else {
-		return UNKNOW_ERROR
+		//如果是*WebError，就把error提取出来
+		return we.err
 	}
+	return e
 }
 
 

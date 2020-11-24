@@ -2,10 +2,11 @@ package main
 
 import (
 	_ "gorm.io/gorm"
-	 "video_server/api"
+	"log"
+	"net/http"
 )
 
 func main()  {
-	api.Test1()
+	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
 
