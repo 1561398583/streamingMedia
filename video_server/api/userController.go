@@ -1,16 +1,15 @@
 package api
 
 import (
+	"encoding/json"
+	"html/template"
 	"net/http"
 	"regexp"
 	"time"
-	"video_server/sessiongo"
-	"html/template"
 	"video_server/config"
-	"video_server/context"
-	"video_server/weberrors"
-	"encoding/json"
+	"video_server/gee"
 	"video_server/models"
+	"video_server/sessiongo"
 )
 
 
@@ -19,7 +18,7 @@ func init()  {
 	http.HandleFunc("/user_signIn", UserSignInController)
 }
 
-func UserLoginController(w http.ResponseWriter,r *http.Request)  {
+func UserLoginController(c *gee.Context)   {
 	// 解析 url 传递的参数，对于 POST 则解析响应包的主体（request body）
 	err := r.ParseForm()
 	if err != nil {

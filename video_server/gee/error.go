@@ -1,4 +1,4 @@
-package weberrors
+package gee
 
 import (
 	"runtime"
@@ -7,8 +7,7 @@ import (
 
 type WebError struct {
 	err error
-	StackInfo string
-	ErrorType int	//0:未知错误，需要记录错误位置到log；1.业务错误,请求对象没找到，只需返回错误信息给用户
+	StackInfo string	//调用栈信息
 }
 
 type WE struct {
@@ -20,12 +19,6 @@ func (we *WE) Error() string{
 }
 
 
-//ErrorType
-const (
-	UNKNOW_ERROR = 0
-	NOT_FOUND = 1
-	PARA_ERROR = 2	//参数错误
-)
 
 func (we *WebError) Error() string {
 	return we.err.Error()
@@ -37,7 +30,7 @@ func (we *WebError) GetStackInfo() string {
 }
 
 
-func New(msg string) *WebError {
+func NewError(msg string) *WebError {
 	err := WE{msg: msg}
 	stackInfo := getStack()
 	return &WebError{err: &err, StackInfo: stackInfo}

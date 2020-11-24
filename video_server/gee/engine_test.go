@@ -9,7 +9,7 @@ import (
 )
 
 func TestEngine_Run(t *testing.T) {
-	engine := New("E:\\log\\video_server\\")
+	engine := New()
 	engine.GET("/index/hello", hello)
 	engine.GET("/user/*", userController)
 	routerNode, err := engine.router.GetNode("GET", "/user")
@@ -19,7 +19,12 @@ func TestEngine_Run(t *testing.T) {
 	routerNode.AddMidHandler(userP)
 	engine.Use(catchPanic)
 	engine.Use(recordTime)
+	engine.GET("/static/pictrue/*", getPictrue)
 	engine.Run("localhost:7000")
+}
+
+func getPictrue(c *Context)  {
+	c.String(200, "hello world")
 }
 
 func hello(c *Context)  {

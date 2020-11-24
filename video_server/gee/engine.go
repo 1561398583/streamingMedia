@@ -16,13 +16,16 @@ type Engine struct {
 }
 
 // New is the constructor of gee.Engine
-func New(logPath string) *Engine {
-	log := loggo.New(logPath, "", loggo.LstdFlags, loggo.Debug)
+func New() *Engine {
+	log := loggo.New("E:\\log\\video_server\\", "", loggo.LstdFlags, loggo.Debug)
 	return &Engine{router: NewRouter(), log: log, handlers: make([]HandlerFunc, 0)}
 }
 
 func (engine *Engine) addRoute(method string, pattern string, handler HandlerFunc) {
-	engine.router.AddHandler(method, pattern, handler)
+	err := engine.router.AddHandler(method, pattern, handler)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // GET defines the method to add GET request
